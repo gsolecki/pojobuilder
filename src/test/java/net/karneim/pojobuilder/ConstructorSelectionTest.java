@@ -1,11 +1,11 @@
 package net.karneim.pojobuilder;
 
 import net.karneim.pojobuilder.model.BuilderM;
-import net.karneim.pojobuilder.model.PropertyM;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import testdata.constructor.ClassLevelAnnotation;
+import testdata.constructor.ConstructorLevelAnnotation;
 import testenv.AddToSourceTree;
 import testenv.ProcessingEnvironmentRunner;
 
@@ -18,12 +18,16 @@ import static org.junit.Assert.assertThat;
 @RunWith(ProcessingEnvironmentRunner.class)
 @AddToSourceTree({ TestBase.SRC_TESTDATA_DIR })
 public class ConstructorSelectionTest extends TestBase {
-	private static String APPLE_CLASSNAME = ClassLevelAnnotation.Apple.class.getCanonicalName();
-    private static String BANANA_CLASSNAME = ClassLevelAnnotation.Banana.class.getCanonicalName();
-    private static String CHERRY_CLASSNAME = ClassLevelAnnotation.Cherry.class.getCanonicalName();
-    private static String DEWBERRY_CLASSNAME = ClassLevelAnnotation.Dewberry.class.getCanonicalName();
+	private static String APPLE_CLASSNAME_CLASS = ClassLevelAnnotation.Apple.class.getCanonicalName();
+    private static String BANANA_CLASSNAME_CLASS = ClassLevelAnnotation.Banana.class.getCanonicalName();
+    private static String CHERRY_CLASSNAME_CLASS = ClassLevelAnnotation.Cherry.class.getCanonicalName();
+    private static String DEWBERRY_CLASSNAME_CLASS = ClassLevelAnnotation.Dewberry.class.getCanonicalName();
+    private static String APPLE_CLASSNAME_CONSTRUCTOR = ConstructorLevelAnnotation.Apple.class.getCanonicalName();
+    private static String BANANA_CLASSNAME_CONSTRUCTOR = ConstructorLevelAnnotation.Banana.class.getCanonicalName();
+    private static String CHERRY_CLASSNAME_CONSTRUCTOR = ConstructorLevelAnnotation.Cherry.class.getCanonicalName();
+    private static String DEWBERRY_CLASSNAME_CONSTRUCTOR = ConstructorLevelAnnotation.Dewberry.class.getCanonicalName();
 
-	private ProcessingEnvironment env;
+    private ProcessingEnvironment env;
 
 	private BuilderModelProducer underTest;
 
@@ -35,9 +39,18 @@ public class ConstructorSelectionTest extends TestBase {
 	}
 
 	@Test
-	public void testSingleDefaultConstructor() {
+    public void testSingleDefaultConstructorViaClassLevelAnnotation() {
+        testSingleDefaultConstructor(APPLE_CLASSNAME_CLASS);
+    }
+
+    @Test
+    public void testSingleDefaultConstructorViaConstructorLevelAnnotation() {
+        testSingleDefaultConstructor(APPLE_CLASSNAME_CONSTRUCTOR);
+    }
+
+	private void testSingleDefaultConstructor(String appleClassname) {
 		// Given:
-		TypeElement pojoTypeElement = env.getElementUtils().getTypeElement(APPLE_CLASSNAME);
+		TypeElement pojoTypeElement = env.getElementUtils().getTypeElement(appleClassname);
 
 		// When:
 		Output output = underTest.produce(new Input(pojoTypeElement));
@@ -49,10 +62,19 @@ public class ConstructorSelectionTest extends TestBase {
 	}
 
     @Test
-    public void testSingleAnnotatedConstructorWithRenaming() {
+    public void testSingleAnnotatedConstructorWithRenamingViaClassLevelAnnotation() {
+        testSingleAnnotatedConstructorWithRenaming(BANANA_CLASSNAME_CLASS);
+    }
+
+    @Test
+    public void testSingleAnnotatedConstructorWithRenamingViaConstructorLevelAnnotation() {
+        testSingleAnnotatedConstructorWithRenaming(BANANA_CLASSNAME_CONSTRUCTOR);
+    }
+
+    private void testSingleAnnotatedConstructorWithRenaming(String bananaClassname) {
         // Given:
-        TypeElement pojoTypeElement = env.getElementUtils().getTypeElement(BANANA_CLASSNAME);
-        System.out.println( pojoTypeElement.getQualifiedName());
+        TypeElement pojoTypeElement = env.getElementUtils().getTypeElement(bananaClassname);
+
         // When:
         Output output = underTest.produce(new Input(pojoTypeElement));
         BuilderM builder = output.getBuilder();
@@ -64,9 +86,18 @@ public class ConstructorSelectionTest extends TestBase {
     }
 
     @Test
-    public void testDefaultConstructorWhereOtherChoicesExist() {
+    public void testDefaultConstructorWhereOtherChoicesExistViaClassLevelAnnotation() {
+        testDefaultConstructorWhereOtherChoicesExist(CHERRY_CLASSNAME_CLASS);
+    }
+
+    @Test
+    public void testDefaultConstructorWhereOtherChoicesExistViaConstructorLevelAnnotation() {
+        testDefaultConstructorWhereOtherChoicesExist(CHERRY_CLASSNAME_CONSTRUCTOR);
+    }
+
+    private void testDefaultConstructorWhereOtherChoicesExist(String cherryClassname) {
         // Given:
-        TypeElement pojoTypeElement = env.getElementUtils().getTypeElement(CHERRY_CLASSNAME);
+        TypeElement pojoTypeElement = env.getElementUtils().getTypeElement(cherryClassname);
 
         // When:
         Output output = underTest.produce(new Input(pojoTypeElement));
@@ -79,9 +110,18 @@ public class ConstructorSelectionTest extends TestBase {
     }
 
     @Test
-    public void testNonDefaultConstructorWhereOtherChoicesExist() {
+    public void testNonDefaultConstructorWhereOtherChoicesExistViaClassLevelAnnotation() {
+        testNonDefaultConstructorWhereOtherChoicesExist(DEWBERRY_CLASSNAME_CLASS);
+    }
+
+    @Test
+    public void testNonDefaultConstructorWhereOtherChoicesExistViaConstructorLevelAnnotation() {
+        testNonDefaultConstructorWhereOtherChoicesExist(DEWBERRY_CLASSNAME_CONSTRUCTOR);
+    }
+
+    private void testNonDefaultConstructorWhereOtherChoicesExist(String dewberryClassname) {
         // Given:
-        TypeElement pojoTypeElement = env.getElementUtils().getTypeElement(DEWBERRY_CLASSNAME);
+        TypeElement pojoTypeElement = env.getElementUtils().getTypeElement(dewberryClassname);
 
         // When:
         Output output = underTest.produce(new Input(pojoTypeElement));
